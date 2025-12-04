@@ -60,13 +60,17 @@ def update_event_after_submit(name, event_title, start_date, end_date, descripti
     event.save(ignore_permissions=True)
     frappe.db.commit()
 
+@frappe.whitelist()
+def delete_event(name):
+    event = frappe.get_doc("Events", name)
+    event.flags.ignore_validate_update_after_submit = True
+
+    if event.docstatus == 1:
+        event.cancel()
+        frappe.db.commit()
 
 
-
-
-    
-
-
+  
 
 
 

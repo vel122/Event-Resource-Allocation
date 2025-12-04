@@ -47,6 +47,23 @@ frappe.ui.form.on("Event Resource", {
 
                 d.show();
             });
+            frm.add_custom_button(__("Go to Event Resource Allocation"), () =>{
+                frappe.set_route("List", "Event Resource Allocation");
+            });
+            frm.add_custom_button(__("Delete Resource"), ()=>{
+                frappe.confirm("Are you Sure want to Delete", () => {
+                    frappe.call({
+                        method: "event_resource_allocation.event_resource_allocation.doctype.event_resource.event_resource.delete_event",
+                        args: {
+                            name: frm.doc.name
+                        },
+                        callback: function(r) {
+                            frm.reload_doc();
+                        }
+                    });
+                });
+            })
+        
         }
     }
 });

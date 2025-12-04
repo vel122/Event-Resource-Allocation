@@ -9,8 +9,7 @@
   "resource_id",
   "resource_type",
   "resource_name",
-  "amended_from",
-  "status"
+  "amended_from"
  ],
  "fields": [
   {
@@ -45,19 +44,13 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "\nEnable\nDisable"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-12-03 17:34:04.475337",
+ "modified": "2025-12-04 12:04:05.313757",
  "modified_by": "Administrator",
  "module": "Event Resource Allocation",
  "name": "Event Resource",

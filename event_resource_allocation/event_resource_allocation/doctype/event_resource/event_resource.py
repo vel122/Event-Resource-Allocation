@@ -30,3 +30,16 @@ def update_resource_after_submit(name, resource_name, resource_type):
     doc.flags.ignore_validate_update_after_submit = True
     doc.save(ignore_permissions=True)
     frappe.db.commit()
+
+
+@frappe.whitelist()
+def delete_event(name):
+    doc = frappe.get_doc("Event Resource", name)
+    doc.flags.ignore_validate_update_after_submit = True
+    if doc.docstatus == 1:
+        doc.cancel()
+        frappe.db.commit()
+        if doc.docstatus == 2:
+            workflow_state = "Not Active"
+            frappe.db.set_value("Event Resource", name, "workflow_state", workflow_state)
+            frappe.db.commit()
