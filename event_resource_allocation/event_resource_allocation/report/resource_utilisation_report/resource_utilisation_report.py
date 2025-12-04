@@ -21,12 +21,11 @@ def execute(filters=None):
         "Event Resource Allocation",
         filters={
             "docstatus": 1,
-            "start_date": [">=", from_date],
-            "end_date": ["<=", to_date]
+            "start_date": ["<=", to_date],
+            "end_date": [">=", from_date]
         },
-        fields=["name", "event_title", "start_date", "end_date"]
+        fields=["name", "start_date", "end_date"]
     )
-
 
     duration = {}
     for a in allocations:

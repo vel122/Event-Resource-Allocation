@@ -1,10 +1,16 @@
 from frappe.model.document import Document
 import frappe
 import json
+from frappe.utils import get_datetime,now_datetime
 
 class EventResourceAllocation(Document):
         
     def on_submit(self):
+        start = get_datetime(self.start_date)
+        if start <= now_datetime():
+            frappe.throw("Event has already started")
+
+        
         for r in self.resources:
             existing = frappe.get_all("Event Resource Allocation",{
                 "docstatus":1,
@@ -28,35 +34,28 @@ class EventResourceAllocation(Document):
 
         event = frappe.get_doc("Events",self.event_id)
 
-        allocation = frappe.get_all("Event Resource Allocation",{
-            "docstatus":1,
-            "event_id":self.event_id
-            },
-            ["name"]
-        )
-
-        for a in allocation:
-            alloc = frappe.get_doc("Event Resource Allocation",a["name"])
-            for r in alloc.resources:
-                child = event.append("resource_allocated",{})
-                child.resource_id = r.resource_id
-                child.from_date = alloc.start_date
-                child.to_date = alloc.end_date
-                child.resource_name = r.resource_name
+        alloc = frappe.get_doc("Event Resource Allocation",self.name)
+        for r in alloc.resources:
+            child = event.append("resource_allocated",{})
+            child.resource_id = r.resource_id
+            child.from_date = alloc.start_date 
+            child.to_date = alloc.end_date
+            child.resource_name = r.resource_name
         
         event.flags.ignore_validate_update_after_submit = True
-        event.save(ignore_permissions = True)
+        event.save(ignore_permissions=True)
 
         frappe.db.commit()
            
 
     def on_cancel(self):
         event = frappe.get_doc("Events", self.event_id)
+        alloc = frappe.get_doc("Event Resource Allocation", self.name)
 
         updated_list = []
-        for row in event.resource_allocated:
-            if row.resource_id not in [r.resource_id for r in self.resources]:
-                updated_list.append(row)
+        for a in alloc.resources:
+            if a not in event.resource_allocated:
+                updated_list.append(a)
 
         event.set("resource_allocated", updated_list)
 
@@ -116,4 +115,26 @@ def update_resources_from_dialog(docname, resources,):
         row.resource_name = r.get("resource_name")
 
     doc.save(ignore_permissions=True)
+    frappe.db.commit()
+
+
+@frappe.whitelist()
+def delete_allocation(name,event_id):
+    event = frappe.get_doc("Events", event_id)
+    alloc = frappe.get_doc("Event Resource Allocation",name)
+
+    updated_list = []
+    for a in alloc.resources:
+        if a not in event.resource_allocated:
+            updated_list.append(a)
+
+    event.set("resource_allocated", updated_list)
+
+    event.flags.ignore_validate_update_after_submit = True
+    event.save(ignore_permissions=True)
+    alloc.cancel()
+    frappe.db.commit()
+    if alloc.docstatus == 2:
+        workflow_state = "Not Allocated"
+        frappe.db.set_value("Event Resource Allocation", name, "workflow_state", workflow_state)
     frappe.db.commit()

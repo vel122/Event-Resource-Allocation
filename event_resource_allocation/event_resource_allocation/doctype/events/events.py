@@ -57,7 +57,7 @@ def update_event_after_submit(name, event_title, start_date, end_date, descripti
     event.description = description
     event.flags.ignore_validate_update_after_submit = True
 
-    event.save(ignore_permissions=True)
+    event.save()
     frappe.db.commit()
 
 @frappe.whitelist()
@@ -66,8 +66,12 @@ def delete_event(name):
     event.flags.ignore_validate_update_after_submit = True
 
     if event.docstatus == 1:
-        event.cancel()
+        if event.resource_allocated:
+            frappe.throw("Cannot delete the event while resources are allocated")
+        else:
+            event.cancel()
         frappe.db.commit()
+        
 
 
   
