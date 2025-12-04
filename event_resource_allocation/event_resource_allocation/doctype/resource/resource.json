@@ -1,0 +1,78 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-11-27 13:32:39.471415",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_kvzg",
+  "resource_id",
+  "resource_type",
+  "resource_name",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_kvzg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Resource",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "resource_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Resource Id",
+   "options": "Event Resource",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "resource_id.resource_name",
+   "fieldname": "resource_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Resource Name",
+   "options": "Event Resource",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "resource_id.resource_type",
+   "fieldname": "resource_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Resource Type",
+   "options": "\nRoom\nInstructor\nEquipment",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-12-02 13:31:27.484600",
+ "modified_by": "Administrator",
+ "module": "Event Resource Allocation",
+ "name": "Resource",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Orange",
+   "title": "Active"
+  }
+ ],
+ "title_field": "resource_id"
+}
