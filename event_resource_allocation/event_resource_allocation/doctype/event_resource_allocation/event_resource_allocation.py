@@ -43,7 +43,7 @@ class EventResourceAllocation(Document):
             child.resource_name = r.resource_name
         
         event.flags.ignore_validate_update_after_submit = True
-        event.save(ignore_permissions=True)
+        event.save()
 
         frappe.db.commit()
            
@@ -60,7 +60,7 @@ class EventResourceAllocation(Document):
         event.set("resource_allocated", updated_list)
 
         event.flags.ignore_validate_update_after_submit = True
-        event.save(ignore_permissions=True)
+        event.save()
         frappe.db.commit()
 
 @frappe.whitelist()
@@ -114,7 +114,7 @@ def update_resources_from_dialog(docname, resources,):
         row.resource_type = r.get("resource_type")
         row.resource_name = r.get("resource_name")
 
-    doc.save(ignore_permissions=True)
+    doc.save()
     frappe.db.commit()
 
 
@@ -131,7 +131,7 @@ def delete_allocation(name,event_id):
     event.set("resource_allocated", updated_list)
 
     event.flags.ignore_validate_update_after_submit = True
-    event.save(ignore_permissions=True)
+    event.save()
     alloc.cancel()
     frappe.db.commit()
     if alloc.docstatus == 2:

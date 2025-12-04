@@ -54,7 +54,8 @@ def execute(filters=None):
         "Event Resource Allocation",
         filters={
             "docstatus": 1,
-            "start_date": [">", now]
+            "start_date": [">", now] and ["<=", to_date],
+            "end_date": [">=", from_date]
         },
         fields=["name", "event_title", "start_date", "end_date"]
     )
@@ -64,6 +65,9 @@ def execute(filters=None):
         u_start = get_datetime(u["start_date"])
         u_end = get_datetime(u["end_date"])
         u_title = u["event_title"]
+        u_current = now_datetime()
+        if u_end < u_current:
+            continue
 
         res = frappe.get_all(
             "Resource",
